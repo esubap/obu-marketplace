@@ -1,0 +1,294 @@
+/**
+ * OBU Student Marketplace - Dashboard Stylesheet
+ * For Student, Moderator, and Admin Panels
+ */
+
+.dashboard-container {
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+/* Sidebar Navigation */
+.dashboard-sidebar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 20px 16px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 24px;
+}
+
+.dashboard-user-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.user-avatar-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--brand-gradient);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dashboard-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dashboard-menu-item {
+    margin-bottom: 4px;
+}
+
+.dashboard-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.92rem;
+    transition: all 0.2s ease;
+}
+
+.dashboard-menu-link-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dashboard-menu-link:hover {
+    background-color: var(--bg-surface-alt);
+    color: var(--brand-primary);
+}
+
+.dashboard-menu-link.active {
+    background: var(--brand-gradient);
+    color: #FFFFFF;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+}
+
+.dashboard-menu-link.active .badge {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #FFFFFF !important;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-card-info h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.stat-card-info p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-icon-blue   { background: rgba(2, 132, 199, 0.12); color: #0284C7; }
+.stat-icon-teal   { background: rgba(13, 148, 136, 0.12); color: #0D9488; }
+.stat-icon-amber  { background: rgba(245, 158, 11, 0.12); color: #F59E0B; }
+.stat-icon-purple { background: rgba(139, 92, 246, 0.12); color: #8B5CF6; }
+.stat-icon-red    { background: rgba(239, 68, 68, 0.12); color: #EF4444; }
+
+/* Dashboard Tables */
+.table-custom {
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+.table-custom th {
+    background-color: var(--bg-surface-alt);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 14px;
+}
+
+.table-custom td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: transparent;
+}
+
+.table-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--bg-surface-alt);
+}
+
+/* Messaging / Chat UI */
+.chat-wrapper {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    height: 600px;
+    overflow: hidden;
+}
+
+.chat-conversations-list {
+    width: 320px;
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    background: var(--bg-surface-alt);
+}
+
+.conversation-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.conversation-item:hover, .conversation-item.active {
+    background: var(--bg-surface);
+}
+
+.conversation-item.active {
+    border-left: 4px solid var(--brand-primary);
+}
+
+.chat-main-area {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-surface);
+}
+
+.chat-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface-elevated);
+}
+
+.chat-messages-stream {
+    flex: 1 1 auto;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--bg-main);
+}
+
+.chat-bubble {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 0.93rem;
+    position: relative;
+    word-break: break-word;
+}
+
+.chat-bubble-mine {
+    align-self: flex-end;
+    background: var(--brand-gradient);
+    color: #FFFFFF;
+    border-bottom-right-radius: 2px;
+}
+
+.chat-bubble-theirs {
+    align-self: flex-start;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 2px;
+}
+
+.chat-timestamp {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    margin-top: 4px;
+    text-align: right;
+}
+
+.chat-input-bar {
+    padding: 12px 18px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-surface);
+}
+
+/* Notifications List */
+.notification-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: background 0.2s ease;
+}
+
+.notification-item.unread {
+    background: rgba(2, 132, 199, 0.05);
+    border-left: 3px solid var(--brand-primary);
+}
+
+.notification-item:hover {
+    background: var(--bg-surface-alt);
+}

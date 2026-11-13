@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="obuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0D9488" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0369A1" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+  </defs>
+  <!-- Shield Badge -->
+  <g transform="translate(10, 10)">
+    <path d="M40 0 L75 14 C75 52, 40 76, 40 76 C40 76, 5 52, 5 14 Z" fill="url(#shieldGrad)" />
+    <!-- Graduation Cap / Book in Shield -->
+    <path d="M40 22 L20 32 L40 42 L60 32 Z" fill="#F59E0B" />
+    <path d="M26 36 L26 48 C26 54, 54 54, 54 48 L54 36" fill="none" stroke="#F59E0B" stroke-width="2.5" />
+    <circle cx="40" cy="58" r="4" fill="#38BDF8" />
+  </g>
+  <!-- Text Branding -->
+  <text x="96" y="44" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="28" font-weight="900" fill="#0284C7">OBU</text>
+  <text x="165" y="44" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="700" fill="#0D9488">MARKETPLACE</text>
+  <text x="98" y="68" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="11.5" font-weight="600" fill="#64748B" letter-spacing="1">ODA BULTUM UNIVERSITY • EST. 2015</text>
+</svg>

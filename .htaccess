@@ -1,0 +1,33 @@
+# OBU Student Marketplace - Apache Configuration
+# Oda Bultum University
+
+# Prevent Directory Browsing
+Options -Indexes
+
+# Set default index
+DirectoryIndex index.php
+
+# UTF-8 Encoding default
+AddDefaultCharset UTF-8
+
+# Block sensitive files and configurations
+<FilesMatch "(\.(sql|env|ini|log|sh|md)|(database|constants|app)\.php)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Custom 404 Handler
+ErrorDocument 404 /obu-marketplace/404.php

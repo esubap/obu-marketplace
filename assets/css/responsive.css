@@ -1,0 +1,71 @@
+/**
+ * OBU Student Marketplace - Responsive Stylesheet
+ * 360px mobile, 768px tablet, 1366px desktop
+ */
+
+@media (max-width: 991.98px) {
+    .chat-wrapper {
+        flex-direction: column;
+        height: 680px;
+    }
+    
+    .chat-conversations-list {
+        width: 100%;
+        height: 220px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .dashboard-sidebar {
+        margin-bottom: 24px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-title {
+        font-size: 1.85rem;
+    }
+    
+    .hero-sub {
+        font-size: 1rem;
+    }
+    
+    .hero-section {
+        padding: 40px 0 48px 0;
+    }
+    
+    .stat-card {
+        padding: 14px;
+    }
+    
+    .stat-card-info h3 {
+        font-size: 1.4rem;
+    }
+    
+    .auth-card {
+        border-radius: 12px;
+    }
+    
+    .auth-body {
+        padding: 20px 16px;
+    }
+    
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .obu-brand-title {
+        font-size: 1rem;
+    }
+    
+    .obu-card-img-wrap {
+        height: 160px;
+    }
+    
+    .btn-obu, .btn-obu-outline {
+        padding: 8px 14px;
+        font-size: 0.88rem;
+    }
+}
