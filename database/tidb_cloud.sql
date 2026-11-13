@@ -1,7 +1,9 @@
 -- ====================================================================
--- OBU STUDENT MARKETPLACE - TiDB CLUSTER & CLOUD MYSQL SCRIPT
--- Tested & Optimized for TiDB Cloud Serverless & Vercel
+-- OBU STUDENT MARKETPLACE - TiDB CLOUD & VERCEL COMPLETE SCHEMA
 -- ====================================================================
+
+-- SELECT ACTIVE DATABASE
+USE `obu_marketplace`;
 
 -- 1. USERS TABLE
 CREATE TABLE IF NOT EXISTS `users` (
@@ -247,7 +249,7 @@ INSERT INTO `users` (`id`, `full_name`, `student_id`, `university`, `department`
 (5, 'Yonas Abera', 'OBU/1123/13', 'Oda Bultum University', 'Electrical Engineering', '4th Year', 'yonas@obu.edu.et', '+251934567890', '$2y$12$N3q78FhB1Oa4r9K81yKjUeWfE3pXwV0uBwAov67z0a6s5p1t4Qd6G', 'student', 'active')
 ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`);
 
--- 2. Categories (Multilingual)
+-- 2. Categories
 INSERT INTO `categories` (`id`, `name_en`, `name_am`, `name_om`, `slug`, `icon`) VALUES
 (1, 'Academic Textbooks & Handouts', 'የትምህርት መጻሕፍት እና ማስታወሻዎች', 'Kitaabota Barnootaa fi Qophii', 'textbooks', 'bi-book'),
 (2, 'Electronics & Laptops', 'ኤሌክትሮኒክስ እና ላፕቶፖች', 'Meeshaalee Elektirooniksii', 'electronics', 'bi-laptop'),
