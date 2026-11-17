@@ -7,7 +7,12 @@
  * while maintaining 100% full compatibility with local XAMPP Apache execution.
  */
 
-// 1. Parse requested path
+// 1. Detect HTTPS from Vercel Edge Proxy
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
+// 2. Parse requested path
 $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $path = trim($requestUri, '/');
 
