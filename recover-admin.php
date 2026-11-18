@@ -114,6 +114,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_reset'])) {
             <?php endif; ?>
         <?php endif; ?>
 
+        <!-- Live Database Status -->
+        <div class="p-3 rounded-3 bg-dark border <?= db() ? 'border-success' : 'border-danger' ?> mb-3 small">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-secondary fw-bold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.5px;">MySQL Database Link</span>
+                <?php if (db()): ?>
+                    <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1"></i> CONNECTED</span>
+                <?php else: ?>
+                    <span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i> DISCONNECTED</span>
+                <?php endif; ?>
+            </div>
+            <?php if (db()): ?>
+                <div class="text-success small"><i class="bi bi-hdd-network me-1"></i> Connected to database successfully.</div>
+            <?php else: ?>
+                <div class="text-danger small mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> <?= e(Database::getError() ?? 'Unknown connection error') ?></div>
+                <div class="text-muted" style="font-size: 0.75rem;">Check your Vercel Environment Variables: <code>host</code>, <code>port</code>, <code>database</code>, <code>username</code>, <code>password</code>.</div>
+            <?php endif; ?>
+        </div>
+
         <!-- Current Admin Account Info -->
         <div class="p-3 rounded-3 bg-dark border border-secondary mb-4 small">
             <div class="text-secondary fw-bold text-uppercase mb-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">

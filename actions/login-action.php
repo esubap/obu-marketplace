@@ -32,7 +32,12 @@ if (is_rate_limited($identifier, $ip)) {
 }
 
 if (!db()) {
-    set_flash('danger', t('error_database'));
+    $errDetail = Database::getError();
+    $errMsg = t('error_database');
+    if ($errDetail) {
+        $errMsg .= " Details: " . $errDetail;
+    }
+    set_flash('danger', $errMsg);
     header('Location: ' . base_url('login.php'));
     exit;
 }
