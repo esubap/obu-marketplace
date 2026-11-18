@@ -303,13 +303,13 @@ ON DUPLICATE KEY UPDATE `name_en` = VALUES(`name_en`);
 -- 3. Initial Users (Simplified to 2 Main Roles: Admin & Student)
 -- Password for all seed users is 'Password123!'
 -- Hashed using password_hash('Password123!', PASSWORD_BCRYPT):
--- $2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya
+-- $2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq
 INSERT INTO `users` (`id`, `full_name`, `student_id`, `university`, `department`, `year_of_study`, `email`, `phone`, `password`, `role`, `status`, `preferred_language`, `theme_preference`) VALUES
-(1, 'Admin', 'ADMIN-001', 'Oda Bultum University', 'ICT Directorate', 'Staff', 'admin@obu.edu.et', '+251 91 123 4567', '$2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya', 'admin', 'active', 'en', 'bright'),
-(2, 'Chala Gemechu', 'OBU/0101/14', 'Oda Bultum University', 'Economics', '3rd Year', 'chala@obu.edu.et', '+251 92 234 5678', '$2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya', 'student', 'active', 'om', 'light'),
-(3, 'Tolosa Bekele', 'OBU/0452/14', 'Oda Bultum University', 'Computer Science', '3rd Year', 'student@obu.edu.et', '+251 93 345 6789', '$2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya', 'student', 'active', 'en', 'bright'),
-(4, 'Hanan Mohammed', 'OBU/0889/15', 'Oda Bultum University', 'Software Engineering', '2nd Year', 'student2@obu.edu.et', '+251 94 456 7890', '$2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya', 'student', 'active', 'am', 'light'),
-(5, 'Yonas Abera', 'OBU/1123/13', 'Oda Bultum University', 'Electrical Engineering', '4th Year', 'student3@obu.edu.et', '+251 95 567 8901', '$2y$10$IYdMLDNPXAK0HK8Eed6J0exh7M.jaYn/7BZQvDfHN9NsgtBSYSyya', 'student', 'active', 'en', 'dark')
+(1, 'Admin', 'ADMIN-001', 'Oda Bultum University', 'ICT Directorate', 'Staff', 'admin@obu.edu.et', '+251 91 123 4567', '$2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq', 'admin', 'active', 'en', 'bright'),
+(2, 'Chala Gemechu', 'OBU/0101/14', 'Oda Bultum University', 'Economics', '3rd Year', 'chala@obu.edu.et', '+251 92 234 5678', '$2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq', 'student', 'active', 'om', 'light'),
+(3, 'Tolosa Bekele', 'OBU/0452/14', 'Oda Bultum University', 'Computer Science', '3rd Year', 'student@obu.edu.et', '+251 93 345 6789', '$2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq', 'student', 'active', 'en', 'bright'),
+(4, 'Hanan Mohammed', 'OBU/0889/15', 'Oda Bultum University', 'Software Engineering', '2nd Year', 'student2@obu.edu.et', '+251 94 456 7890', '$2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq', 'student', 'active', 'am', 'light'),
+(5, 'Yonas Abera', 'OBU/1123/13', 'Oda Bultum University', 'Electrical Engineering', '4th Year', 'student3@obu.edu.et', '+251 95 567 8901', '$2y$10$pPTRZNsKPRwWFVNJGjDYT.MhteCj/gLO6ks/QoW/11oacHa6sAbtq', 'student', 'active', 'en', 'dark')
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 -- 4. Sample Products
