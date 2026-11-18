@@ -64,7 +64,12 @@ class Database {
 
         // Database name: matches DB_NAME, database, DATABASE, TIDB_DATABASE, MYSQLDATABASE
         $envDb = self::getEnvVal(['DB_NAME', 'database', 'DATABASE', 'DB_DATABASE', 'TIDB_DATABASE', 'MYSQLDATABASE', 'MYSQL_DATABASE']);
-        if (!empty($envDb)) self::$dbname = $envDb;
+        if (!empty($envDb)) {
+            // Never default to internal MySQL system schema
+            if (!in_array(strtolower($envDb), ['sys', 'information_schema', 'performance_schema', 'mysql'])) {
+                self::$dbname = $envDb;
+            }
+        }
 
         // Username: matches DB_USER, username, USERNAME, user, USER, TIDB_USER, MYSQLUSER
         $envUser = self::getEnvVal(['DB_USER', 'username', 'USERNAME', 'user', 'USER', 'DB_USERNAME', 'TIDB_USER', 'MYSQLUSER', 'MYSQL_USER']);
@@ -113,42 +118,75 @@ class Database {
     }
 
     /**
-     * Get or create PDO singleton connection
+     * Get or create PDO singleton connection with auto-detection of tables
      */
     public static function getConnection(): ?PDO {
         if (self::$instance === null) {
             self::initConfig();
 
-            // Try configured dbname first, with automatic fallback across aliases
-            $candidateDbs = array_unique([self::$dbname, 'obu_marketplace', 'obu-marketplace', 'university_marketplace']);
+            // Candidate databases to verify
+            $candidateDbs = array_unique([
+                self::$dbname,
+                'obu_marketplace',
+                'obu-marketplace',
+                'university_marketplace',
+                'test'
+            ]);
+
+            // Filter out system schemas
+            $candidateDbs = array_filter($candidateDbs, function($db) {
+                return !in_array(strtolower($db), ['sys', 'information_schema', 'performance_schema', 'mysql']);
+            });
+
+            $fallbackConn = null;
+            $fallbackDb = null;
 
             foreach ($candidateDbs as $dbName) {
                 $dsn = "mysql:host=" . self::$host . ";port=" . self::$port . ";dbname=" . $dbName . ";charset=" . self::$charset;
 
-                // Attempt 1: With SSL CA if cloud host
+                // Try connecting
+                $pdo = null;
                 try {
                     $options = self::getPdoOptions(true);
-                    self::$instance = new PDO($dsn, self::$username, self::$password, $options);
-                    self::$dbname = $dbName;
-                    self::$connectionError = null;
-                    return self::$instance;
+                    $pdo = new PDO($dsn, self::$username, self::$password, $options);
                 } catch (PDOException $e1) {
-                    // Attempt 2: Fallback without SSL CA parameter (for environments where CA file is unreadable)
                     if (self::$host !== '127.0.0.1' && self::$host !== 'localhost') {
                         try {
                             $optionsNoCa = self::getPdoOptions(false);
-                            self::$instance = new PDO($dsn, self::$username, self::$password, $optionsNoCa);
-                            self::$dbname = $dbName;
-                            self::$connectionError = null;
-                            return self::$instance;
+                            $pdo = new PDO($dsn, self::$username, self::$password, $optionsNoCa);
                         } catch (PDOException $e2) {
                             self::$connectionError = $e2->getMessage();
                         }
                     } else {
                         self::$connectionError = $e1->getMessage();
                     }
-                    self::$instance = null;
                 }
+
+                if ($pdo) {
+                    // Check if the target database actually contains the users table
+                    try {
+                        $check = $pdo->query("SHOW TABLES LIKE 'users'")->fetch();
+                        if ($check) {
+                            self::$instance = $pdo;
+                            self::$dbname = $dbName;
+                            self::$connectionError = null;
+                            return self::$instance;
+                        }
+                    } catch (Exception $e) {}
+
+                    // Save as fallback if no database with users table is found
+                    if (!$fallbackConn) {
+                        $fallbackConn = $pdo;
+                        $fallbackDb = $dbName;
+                    }
+                }
+            }
+
+            if ($fallbackConn) {
+                self::$instance = $fallbackConn;
+                self::$dbname = $fallbackDb;
+                self::$connectionError = null;
+                return self::$instance;
             }
         }
 
@@ -185,6 +223,13 @@ class Database {
             self::getConnection();
         }
         return self::$connectionError;
+    }
+
+    /**
+     * Get active database name
+     */
+    public static function getDbName(): string {
+        return self::$dbname;
     }
 
     /**

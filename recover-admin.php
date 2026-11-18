@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_reset'])) {
                 <?php endif; ?>
             </div>
             <?php if (db()): ?>
-                <div class="text-success small"><i class="bi bi-hdd-network me-1"></i> Connected to database successfully.</div>
+                <div class="text-success small"><i class="bi bi-hdd-network me-1"></i> Connected to database <code><?= e(Database::getDbName()) ?></code> successfully.</div>
             <?php else: ?>
                 <div class="text-danger small mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> <?= e(Database::getError() ?? 'Unknown connection error') ?></div>
                 <div class="text-muted" style="font-size: 0.75rem;">Check your Vercel Environment Variables: <code>host</code>, <code>port</code>, <code>database</code>, <code>username</code>, <code>password</code>.</div>
