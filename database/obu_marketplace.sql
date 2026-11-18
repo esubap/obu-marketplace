@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` VARCHAR(150) NOT NULL UNIQUE,
   `phone` VARCHAR(30) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `profile_image` VARCHAR(255) DEFAULT NULL,
+  `profile_image` MEDIUMTEXT DEFAULT NULL,
   `role` ENUM('student', 'moderator', 'admin') NOT NULL DEFAULT 'student',
   `status` ENUM('active', 'pending', 'suspended') NOT NULL DEFAULT 'active',
   `preferred_language` VARCHAR(10) NOT NULL DEFAULT 'en',
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 CREATE TABLE IF NOT EXISTS `product_images` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `product_id` INT NOT NULL,
-  `image_path` VARCHAR(255) NOT NULL,
+  `image_path` MEDIUMTEXT NOT NULL,
   `is_primary` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   INDEX `idx_product_images_pid` (`product_id`),

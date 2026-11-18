@@ -170,6 +170,7 @@ class Database {
                             self::$instance = $pdo;
                             self::$dbname = $dbName;
                             self::$connectionError = null;
+                            self::ensureSchemaCompatibility();
                             return self::$instance;
                         }
                     } catch (Exception $e) {}
@@ -186,11 +187,63 @@ class Database {
                 self::$instance = $fallbackConn;
                 self::$dbname = $fallbackDb;
                 self::$connectionError = null;
+                self::ensureSchemaCompatibility();
                 return self::$instance;
             }
         }
 
+        if (self::$instance !== null) {
+            self::ensureSchemaCompatibility();
+        }
         return self::$instance;
+    }
+
+    /**
+     * Auto-migrate column types if necessary (e.g. ensure product_images.image_path and users.profile_image
+     * are MEDIUMTEXT to support serverless Base64 storage)
+     */
+    public static function ensureSchemaCompatibility(): void {
+        static $checked = false;
+        if ($checked || !self::$instance) return;
+        $checked = true;
+
+        try {
+            // Check if product_images table exists
+            $tblCheck = self::$instance->query("SHOW TABLES LIKE 'product_images'")->fetch();
+            if ($tblCheck) {
+                $stmt = self::$instance->query("
+                    SELECT DATA_TYPE 
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                      AND TABLE_NAME = 'product_images' 
+                      AND COLUMN_NAME = 'image_path'
+                    LIMIT 1
+                ");
+                $colType = $stmt ? $stmt->fetchColumn() : null;
+                if ($colType && !in_array(strtolower($colType), ['mediumtext', 'longtext', 'blob', 'mediumblob', 'longblob'])) {
+                    self::$instance->exec("ALTER TABLE `product_images` MODIFY `image_path` MEDIUMTEXT NOT NULL");
+                }
+            }
+
+            // Check if users table exists
+            $userCheck = self::$instance->query("SHOW TABLES LIKE 'users'")->fetch();
+            if ($userCheck) {
+                $stmtUser = self::$instance->query("
+                    SELECT DATA_TYPE 
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                      AND TABLE_NAME = 'users' 
+                      AND COLUMN_NAME = 'profile_image'
+                    LIMIT 1
+                ");
+                $userColType = $stmtUser ? $stmtUser->fetchColumn() : null;
+                if ($userColType && !in_array(strtolower($userColType), ['mediumtext', 'longtext', 'blob', 'mediumblob', 'longblob'])) {
+                    self::$instance->exec("ALTER TABLE `users` MODIFY `profile_image` MEDIUMTEXT NULL DEFAULT NULL");
+                }
+            }
+        } catch (Throwable $e) {
+            // Silently continue if permissions restrict schema introspection
+        }
     }
 
     /**

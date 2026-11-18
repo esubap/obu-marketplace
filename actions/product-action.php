@@ -70,13 +70,9 @@ if ($action === 'create' && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            // Generate safe randomized filename
-            $ext = $validation['ext'];
-            $newFileName = 'prod_' . bin2hex(random_bytes(10)) . '_' . time() . '.' . $ext;
-            $destination = PRODUCTS_UPLOAD_DIR . DIRECTORY_SEPARATOR . $newFileName;
-
-            if (move_uploaded_file($file['tmp_name'], $destination)) {
-                $uploadedImages[] = $newFileName;
+            $savedImage = store_uploaded_image($file, 'products', 'prod');
+            if ($savedImage) {
+                $uploadedImages[] = $savedImage;
             }
         }
     }
@@ -189,12 +185,10 @@ if ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $validation = validate_image_upload($file);
                 if ($validation['valid']) {
-                    $ext = $validation['ext'];
-                    $newFileName = 'prod_' . bin2hex(random_bytes(10)) . '_' . time() . '.' . $ext;
-                    $dest = PRODUCTS_UPLOAD_DIR . DIRECTORY_SEPARATOR . $newFileName;
-                    if (move_uploaded_file($file['tmp_name'], $dest)) {
+                    $savedImage = store_uploaded_image($file, 'products', 'prod');
+                    if ($savedImage) {
                         $stmtImg = db()->prepare("INSERT INTO product_images (product_id, image_path, is_primary) VALUES (?, ?, 0)");
-                        $stmtImg->execute([$productId, $newFileName]);
+                        $stmtImg->execute([$productId, $savedImage]);
                     }
                 }
             }

@@ -48,7 +48,7 @@ try {
 
     foreach ($images as $img) {
         $imgPath = $img['image_path'];
-        if (!str_starts_with($imgPath, 'assets/')) {
+        if (!str_starts_with($imgPath, 'assets/') && !str_starts_with($imgPath, 'data:')) {
             $fileOnDisk = PRODUCTS_UPLOAD_DIR . DIRECTORY_SEPARATOR . $imgPath;
             if (file_exists($fileOnDisk)) {
                 @unlink($fileOnDisk);

@@ -49,16 +49,13 @@ if ($action === 'update_profile' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $ext = $validation['ext'];
-        $newAvatarName = 'avatar_' . $userId . '_' . time() . '.' . $ext;
-        $dest = PROFILES_UPLOAD_DIR . DIRECTORY_SEPARATOR . $newAvatarName;
-
-        if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $dest)) {
-            // Delete old avatar if present
-            if (!empty($profileImageName) && file_exists(PROFILES_UPLOAD_DIR . DIRECTORY_SEPARATOR . $profileImageName)) {
+        $savedAvatar = store_uploaded_image($_FILES['profile_image'], 'profiles', 'avatar_' . $userId);
+        if ($savedAvatar) {
+            // Delete old avatar if present on disk
+            if (!empty($profileImageName) && !str_starts_with($profileImageName, 'data:') && file_exists(PROFILES_UPLOAD_DIR . DIRECTORY_SEPARATOR . $profileImageName)) {
                 @unlink(PROFILES_UPLOAD_DIR . DIRECTORY_SEPARATOR . $profileImageName);
             }
-            $profileImageName = $newAvatarName;
+            $profileImageName = $savedAvatar;
         }
     }
 

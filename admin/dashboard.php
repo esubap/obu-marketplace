@@ -32,7 +32,7 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
             $stmtImg->execute([$targetId]);
             $images = $stmtImg->fetchAll();
             foreach ($images as $img) {
-                if (!str_starts_with($img['image_path'], 'assets/')) {
+                if (!str_starts_with($img['image_path'], 'assets/') && !str_starts_with($img['image_path'], 'data:')) {
                     $fileOnDisk = PRODUCTS_UPLOAD_DIR . DIRECTORY_SEPARATOR . $img['image_path'];
                     if (file_exists($fileOnDisk)) { @unlink($fileOnDisk); }
                 }

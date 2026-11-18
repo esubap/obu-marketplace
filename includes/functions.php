@@ -226,3 +226,107 @@ function str_excerpt(string $text, int $limit = 100): string {
     }
     return mb_substr($clean, 0, $limit) . '...';
 }
+
+/**
+ * Universally store an uploaded image across both traditional disk (XAMPP)
+ * and read-only serverless filesystems (Vercel / AWS Lambda).
+ *
+ * @param array $file $_FILES item array (with name, tmp_name, error, size, etc.)
+ * @param string $targetFolder 'products' or 'profiles'
+ * @param string $prefix File name prefix (e.g. 'prod' or 'avatar')
+ * @return string|null Relative filename (if saved to disk) OR Base64 Data URL (if serverless), or null on failure.
+ */
+function store_uploaded_image(array $file, string $targetFolder = 'products', string $prefix = 'prod'): ?string {
+    if (empty($file) || empty($file['tmp_name']) || !file_exists($file['tmp_name'])) {
+        return null;
+    }
+
+    // Ensure validation helper is available
+    if (function_exists('validate_image_upload')) {
+        $validation = validate_image_upload($file);
+        if (!$validation['valid']) {
+            return null;
+        }
+        $ext = $validation['ext'] ?? 'jpg';
+        $mime = $validation['mime'] ?? 'image/jpeg';
+    } else {
+        $ext = strtolower(pathinfo($file['name'] ?? 'image.jpg', PATHINFO_EXTENSION)) ?: 'jpg';
+        $mime = 'image/jpeg';
+    }
+
+    $uploadDir = ($targetFolder === 'profiles') ? PROFILES_UPLOAD_DIR : PRODUCTS_UPLOAD_DIR;
+
+    // 1. Try traditional local disk storage (when folder is writable, e.g. local XAMPP)
+    $diskWritable = false;
+    if (!is_dir($uploadDir)) {
+        @mkdir($uploadDir, 0777, true);
+    }
+    if (is_dir($uploadDir) && is_writable($uploadDir)) {
+        $diskWritable = true;
+    }
+
+    if ($diskWritable) {
+        $safeName = $prefix . '_' . bin2hex(random_bytes(10)) . '_' . time() . '.' . $ext;
+        $destPath = $uploadDir . DIRECTORY_SEPARATOR . $safeName;
+        if (@move_uploaded_file($file['tmp_name'], $destPath)) {
+            return $safeName;
+        }
+    }
+
+    // 2. Serverless fallback (Vercel / AWS Lambda read-only disk):
+    // Read the temporary uploaded file and encode as an optimized Base64 Data URL.
+    // This allows the image to persist in MySQL / TiDB Cloud and render worldwide
+    // without requiring external S3 or third-party paid buckets!
+    $raw = @file_get_contents($file['tmp_name']);
+    if ($raw === false || strlen($raw) === 0) {
+        return null;
+    }
+
+    // Attempt smart GD resizing & compression to keep database records compact (< 100KB)
+    if (extension_loaded('gd') && function_exists('imagecreatefromstring')) {
+        $srcImg = @imagecreatefromstring($raw);
+        if ($srcImg !== false) {
+            $origW = imagesx($srcImg);
+            $origH = imagesy($srcImg);
+            $maxDim = 900; // Optimal resolution for product cards and mobile screens
+
+            if ($origW > $maxDim || $origH > $maxDim) {
+                if ($origW >= $origH) {
+                    $newW = $maxDim;
+                    $newH = (int)round(($origH / $origW) * $maxDim);
+                } else {
+                    $newH = $maxDim;
+                    $newW = (int)round(($origW / $origH) * $maxDim);
+                }
+
+                $dstImg = imagecreatetruecolor($newW, $newH);
+                if ($mime === 'image/png' || $mime === 'image/webp') {
+                    imagealphablending($dstImg, false);
+                    imagesavealpha($dstImg, true);
+                }
+
+                imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $newW, $newH, $origW, $origH);
+                imagedestroy($srcImg);
+                $srcImg = $dstImg;
+            }
+
+            ob_start();
+            if ($mime === 'image/png') {
+                imagepng($srcImg, null, 7);
+            } elseif ($mime === 'image/webp' && function_exists('imagewebp')) {
+                imagewebp($srcImg, null, 80);
+            } else {
+                imagejpeg($srcImg, null, 80);
+                $mime = 'image/jpeg';
+            }
+            $compressed = ob_get_clean();
+            imagedestroy($srcImg);
+
+            if (!empty($compressed)) {
+                $raw = $compressed;
+            }
+        }
+    }
+
+    return 'data:' . $mime . ';base64,' . base64_encode($raw);
+}

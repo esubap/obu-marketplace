@@ -7,6 +7,11 @@
  * while maintaining 100% full compatibility with local XAMPP Apache execution.
  */
 
+// Buffer all output to guarantee clean headers and redirects
+if (!ob_get_level()) {
+    ob_start();
+}
+
 // 1. Detect HTTPS from Vercel Edge Proxy
 if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
     $_SERVER['HTTPS'] = 'on';

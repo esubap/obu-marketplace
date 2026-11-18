@@ -4,9 +4,14 @@
  * Oda Bultum University
  */
 
+// Output buffering to prevent "headers already sent" issues
+if (!ob_get_level()) {
+    ob_start();
+}
+
 // Error handling configuration
 error_reporting(E_ALL);
-ini_set('display_errors', '1'); // In development, display errors; in production, set to 0
+ini_set('display_errors', '0'); // Safe for production redirects
 
 // Set Timezone to Ethiopia (Addis Ababa / GMT+3)
 date_default_timezone_set('Africa/Addis_Ababa');
@@ -83,10 +88,52 @@ function asset_url(string $path = ''): string {
 }
 
 /**
- * Generate uploads URL
+ * Generate uploads URL (supports local file paths, serverless Base64 Data URLs, and external URLs)
  */
 function upload_url(string $path = ''): string {
-    return base_url('uploads/' . ltrim($path, '/'));
+    $trimmed = ltrim($path, '/');
+    if (empty($trimmed)) {
+        return base_url('uploads');
+    }
+    // Handle Base64 Data URLs directly (preserves images on serverless environments like Vercel)
+    if (str_starts_with($trimmed, 'data:image')) {
+        return $trimmed;
+    }
+    if (str_contains($trimmed, 'data:image')) {
+        $pos = strpos($trimmed, 'data:image');
+        return substr($trimmed, $pos);
+    }
+    // Handle absolute URLs
+    if (str_starts_with($trimmed, 'http://') || str_starts_with($trimmed, 'https://')) {
+        return $trimmed;
+    }
+    return base_url('uploads/' . $trimmed);
+}
+
+/**
+ * Universal helper to get product image URL
+ */
+function get_product_image_url(?string $imagePath): string {
+    if (empty($imagePath)) {
+        return asset_url('images/placeholders/default-product.svg');
+    }
+    if (str_starts_with($imagePath, 'assets/')) {
+        return asset_url(substr($imagePath, 7));
+    }
+    return upload_url('products/' . $imagePath);
+}
+
+/**
+ * Universal helper to get profile avatar URL
+ */
+function get_profile_image_url(?string $avatarPath): string {
+    if (empty($avatarPath)) {
+        return asset_url('images/placeholders/default-avatar.svg');
+    }
+    if (str_starts_with($avatarPath, 'assets/')) {
+        return asset_url(substr($avatarPath, 7));
+    }
+    return upload_url('profiles/' . $avatarPath);
 }
 
 // Load Core Application Services
